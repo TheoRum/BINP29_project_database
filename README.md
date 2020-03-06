@@ -1,1 +1,1 @@
-# BINP29_project_database
+# BINP29 project database
