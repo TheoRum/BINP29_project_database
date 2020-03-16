@@ -4,7 +4,7 @@
 """
 
  | Title:
-     flask_sle.py
+     config.py
  | Date:
      2020-03-09
  | Author(s):
@@ -15,5 +15,11 @@
 #__________________
 # import functions \__________________________________________________________
 
-from app import app
+import os
 
+
+#______________________________
+# define config for the log-in \______________________________________________
+
+class Config(object):
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'

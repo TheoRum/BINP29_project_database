@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% with text = get_flashed_messages() %}
+<h1>{{text[0]}}</h1>  
+{% endwith %}
+   
+
+    <h2>Select the data:</h2>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+
+        <p>{{ form.pn() }} {{ form.pn.label }} </p>
+
+        <p>{{ form.outliers() }} {{ form.outliers.label }}</p>
+        
+        <p>{{ form.age() }} {{ form.age.label }}</p>
+        
+        <p>{{ form.qol() }} {{ form.qol.label }}</p>
+
+        <h2>Submit your selection:</h2>
+        <p>{{ form.submit1() }}</p>
+        
+        <h2>Download data:</h2>
+        <p>{{ form.submit2() }}</p>
+
+        <h2>Principal Component Analysis (PCA) on CNS-VS standard scores:</h2>
+        <p>{{ form.submit3() }}</p>
+        {% if result_pca != None %}
+        <img src="data:image/png;base64,{{ result_pca }}"\>
+        {% endif %}
+
+
+        <h2>Clustering (hierarchical ward) on CNS-VS standard scores:</h2>
+        <p>{{ form.submit4() }}</p>
+        {% if result_hcl != None %}
+        <img src="data:image/png;base64,{{ result_hcl }}"\>
+        {% endif %}
+
+    </form>
+
+
+
+
+{% endblock %}
+

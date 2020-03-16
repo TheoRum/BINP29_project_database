@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>SLE project page</title>
+    </head>
+    <body>
+        <div>Navigation bar:
+        <a href="{{ url_for('start') }}">Start</a>
+        <a href="{{ url_for('login') }}">Login</a>
+        </div>     
+        <hr>      
+        
+        {% block content %}{% endblock %}
+    </body>
+</html>
+
+

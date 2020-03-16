@@ -4,7 +4,7 @@
 """
 
  | Title:
-     flask_sle.py
+     routes.py
  | Date:
      2020-03-09
  | Author(s):
@@ -15,5 +15,10 @@
 #__________________
 # import functions \__________________________________________________________
 
-from app import app
+from flask import Flask
+from config import Config
 
+app = Flask(__name__)
+app.config.from_object(Config)
+
+from app import routes
