@@ -20,9 +20,10 @@ from app import app
 from app.forms import LoginForm, IndexForm
 import pandas as pd
 import os
-from sklearn.decomposition import PCA
 from matplotlib import pyplot as plt
 import seaborn as sns
+from sklearn.decomposition import PCA
+
 
 #__________________
 # define functions \__________________________________________________________
@@ -39,8 +40,7 @@ def login():
     form = LoginForm()
     # if the submit button is pressend without any data (GET) it will jump to the 
     # last return line and shows the login.html again
-    # if data is submitted, the data will be sended (POST) and the if is true. 
-    # BUT if just one "data required" is missing, it will start from the beginning
+    # if data is submitted, the data will be sended (POST) and redirect to index.html
     if form.validate_on_submit():
         # flash=show message to the user but the message will not automatically appear
         flash('Hej {}, welcome back!'.format(form.username.data))
@@ -56,11 +56,13 @@ def index():
 
     if form.validate_on_submit():
         
+        # submit button 1: query
         if form.submit1.data:
             number_subj, new_df = query_csv(form)
             flash('Number of subjects due to your selection: {}'.format(number_subj), 'error') ### IN RED COLOUR!!!
             return render_template('index.html', form=form, result_pca=None, result_hcl=None)
         
+        # submit button 2: download
         if form.submit2.data:
             number_subj, new_df = query_csv(form)
             resp = make_response(new_df.to_csv())
@@ -68,6 +70,7 @@ def index():
             resp.headers["Content-Type"] = "text/csv"
             return resp  
         
+        # submit button 3: PCA
         if form.submit3.data:
             number_subj, new_df = query_csv(form)
             fig_pca = pca_cnsvs_ss(new_df)
@@ -79,6 +82,7 @@ def index():
             figdata_png_pca = base64.b64encode(figpcafile.getvalue())
             return render_template('index.html', form=form, result_pca=figdata_png_pca.decode('utf8'), result_hcl=None)
 
+        # submit button 4: Clustering
         if form.submit4.data:
             number_subj, new_df = query_csv(form)
             fig_hcl = clustering_cnsvs_ss(new_df)
@@ -106,8 +110,6 @@ def query_csv(form):
     # load csv-file
     df = pd.read_csv(path+'data.csv', index_col=0)
     
-#    print(df)
-    
     ## do queries
     # if TRUE => use the ids (GDPR!)
     use_pn = form.pn.data
@@ -115,13 +117,11 @@ def query_csv(form):
         d = df.drop(columns='id')
     else: d = df.copy()
     
-    
     # if TRUE => use also outliers
     incl_out = form.outliers.data 
     if incl_out == False:
         d = d.query('outlier==False')
     else: d = d.copy()    
-    
     
     # AGE threshold
     age_string = form.age.data
@@ -145,7 +145,7 @@ def query_csv(form):
         elif '-' in age_string:
             lower = age_string.split('-')[0]
             upper = age_string.split('-')[1]
-            if lower.isdigit() and upper.isdigit():
+            if lower.isdigit() and upper.isdigit():  # check if string contains only digits
                 lower = int(lower)
                 upper = int(upper)
                 d = d.query('@upper > pat_age > @lower')   
@@ -153,7 +153,7 @@ def query_csv(form):
     else:
         d = d.copy()    
 
-    # Qulaity of life threshold
+    # Qulality of life threshold
     qol_string = form.qol.data
     if qol_string:
         
@@ -166,7 +166,6 @@ def query_csv(form):
             except:
                 pass
             
-            
         #  smaller
         elif qol_string.startswith('<'):
             qol = qol_string.split('<')[1]
@@ -175,7 +174,6 @@ def query_csv(form):
                 d = d.query('QoL_eq5d<@qol') 
             except:
                 pass
-            
                 
         #  range
         elif '-' in qol_string:
@@ -210,7 +208,8 @@ def pca_cnsvs_ss(new_df):
     pca = PCA(n_components=pca_ncomponents,svd_solver='auto', whiten=True, random_state=0).fit(X)
     X_pca = pca.transform(X)
     
-    lbl = new_df['label'].values
+    # plot
+    lbl = new_df['label'].values 
     lbl_uniq = np.unique(lbl)
     colors = ['g','r','b']
     pca_plot = []
@@ -226,29 +225,24 @@ def pca_cnsvs_ss(new_df):
 
     return fig
 
+
 # clustering on the CNSVS-standard scores
 def clustering_cnsvs_ss(new_df):       
         
     X = new_df.filter(regex='_ss')
-    X.to_csv('test.csv')
     
-    # create the labels
+    # create the color labels
     color_lbl = pd.DataFrame(columns=['HC','nonNPSLE', 'NPSLE', ], index=new_df.index, data='white')
     color_lbl['HC'][new_df[new_df.label=='HC'].index] = 'g'
     color_lbl['nonNPSLE'][new_df[new_df.label=='nonNPSLE'].index] = 'b'
     color_lbl['NPSLE'][new_df[new_df.label=='NPSLE'].index] = 'r'
     
-    
+    # plot
     fig = sns.clustermap(X.T, row_cluster=None, method='ward', figsize=(7,5), cmap="mako",
                          col_colors=color_lbl,
                          xticklabels=0)
-    
-#    fig.cax.set_visible(False)
-
     for tick in fig.ax_col_colors.get_yticklabels():
         tick.set_fontsize(7)
-    
-    
     ax = fig.ax_heatmap
     ax.set_ylabel('CNS-VS score', fontsize=12)
     ax.set_xlabel('subjects', fontsize=12)

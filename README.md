@@ -1,4 +1,4 @@
-# project database
+# BINP29 project database
 This project was part of the BINP29 course at Lund University in 2020.
 
 ## Description
@@ -17,15 +17,16 @@ flask --version
 conda info --envs
 ```
 
-After cloning this repository, the following packages have to be installed:
+After cloning this repository, the following packages are required:
 * numpy
 * flask-wtf
 * pandas
 * matplotlib
 * seaborn
+* sklearn
 
 ## Usage
-change in the "src" folder in the repository.
+Change in the "src" folder in the cloned repository.
 ```bash
 FLASK_APP=flask_sle.py 
 flask run
