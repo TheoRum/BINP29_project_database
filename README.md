@@ -6,16 +6,16 @@ This code is used to allow collaborators in the SLE project to access, filter, a
 
 ## Installation
 It is recommended to create a new conda environment for flask and to activate:
-´´´bash
+```bash
 conda create -n flaskenv flask
 conda activate flaskenv
-´´´
+```
 
 Control the version and the environments:
-´´´bash
+```bash
 flask --version
 conda info --envs
-´´´
+```
 
 After cloning this repository, the following packages have to be installed:
 * numpy
@@ -26,10 +26,10 @@ After cloning this repository, the following packages have to be installed:
 
 ## Usage
 change in the "src" folder in the repository.
-´´´bash
+```bash
 FLASK_APP=flask_sle.py 
 flask run
-´´´
+```
 
 ## Authors and acknowledgment
 Theodor Rumetshofer
