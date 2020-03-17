@@ -18,12 +18,14 @@ conda info --envs
 ```
 
 After cloning this repository, the following packages are required:
-* numpy
-* flask-wtf
-* pandas
-* matplotlib
-* seaborn
-* sklearn
+```python
+pip install numpy
+pip install Flask-WTF
+pip install pandas
+pip install matplotlib
+pip install seaborn
+pip install sklearn
+```
 
 ## Usage
 Change in the "src" folder in the cloned repository.
