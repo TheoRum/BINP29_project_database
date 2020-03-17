@@ -4,6 +4,8 @@ This project was part of the BINP29 course at Lund University in 2020.
 ## Description
 This code is used to allow collaborators in the SLE project to access, filter, analyze and output data from the project dataset in a web framework using flask. The original database is a csv-file which is stored in the "data" folder.  
 
+The manuscript and presentation can be found in the "doc" folder.
+
 ## Installation
 It is recommended to create a new conda environment for flask and to activate:
 ```bash
